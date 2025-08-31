@@ -1,0 +1,1713 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "gpuType": "T4"
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    },
+    "accelerator": "GPU"
+  },
+  "cells": [
+    {
+      "cell_type": "code",
+      "source": [
+        "pip install gradio"
+      ],
+      "metadata": {
+        "id": "oB4iJMVddgDf",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "76f17d0d-9c87-43dc-eef9-9e6a2f72d3bd"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting gradio\n",
+            "  Downloading gradio-4.27.0-py3-none-any.whl (17.1 MB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m17.1/17.1 MB\u001b[0m \u001b[31m41.3 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hCollecting aiofiles<24.0,>=22.0 (from gradio)\n",
+            "  Downloading aiofiles-23.2.1-py3-none-any.whl (15 kB)\n",
+            "Requirement already satisfied: altair<6.0,>=4.2.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (4.2.2)\n",
+            "Collecting fastapi (from gradio)\n",
+            "  Downloading fastapi-0.110.2-py3-none-any.whl (91 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m91.9/91.9 kB\u001b[0m \u001b[31m3.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hCollecting ffmpy (from gradio)\n",
+            "  Downloading ffmpy-0.3.2.tar.gz (5.5 kB)\n",
+            "  Preparing metadata (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "Collecting gradio-client==0.15.1 (from gradio)\n",
+            "  Downloading gradio_client-0.15.1-py3-none-any.whl (313 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m313.6/313.6 kB\u001b[0m \u001b[31m22.2 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hCollecting httpx>=0.24.1 (from gradio)\n",
+            "  Downloading httpx-0.27.0-py3-none-any.whl (75 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m75.6/75.6 kB\u001b[0m \u001b[31m7.8 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: huggingface-hub>=0.19.3 in /usr/local/lib/python3.10/dist-packages (from gradio) (0.20.3)\n",
+            "Requirement already satisfied: importlib-resources<7.0,>=1.3 in /usr/local/lib/python3.10/dist-packages (from gradio) (6.4.0)\n",
+            "Requirement already satisfied: jinja2<4.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (3.1.3)\n",
+            "Requirement already satisfied: markupsafe~=2.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (2.1.5)\n",
+            "Requirement already satisfied: matplotlib~=3.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (3.7.1)\n",
+            "Requirement already satisfied: numpy~=1.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (1.25.2)\n",
+            "Collecting orjson~=3.0 (from gradio)\n",
+            "  Downloading orjson-3.10.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (141 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m141.1/141.1 kB\u001b[0m \u001b[31m3.0 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: packaging in /usr/local/lib/python3.10/dist-packages (from gradio) (24.0)\n",
+            "Requirement already satisfied: pandas<3.0,>=1.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (2.0.3)\n",
+            "Requirement already satisfied: pillow<11.0,>=8.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (9.4.0)\n",
+            "Requirement already satisfied: pydantic>=2.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (2.7.0)\n",
+            "Collecting pydub (from gradio)\n",
+            "  Downloading pydub-0.25.1-py2.py3-none-any.whl (32 kB)\n",
+            "Collecting python-multipart>=0.0.9 (from gradio)\n",
+            "  Downloading python_multipart-0.0.9-py3-none-any.whl (22 kB)\n",
+            "Requirement already satisfied: pyyaml<7.0,>=5.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (6.0.1)\n",
+            "Collecting ruff>=0.2.2 (from gradio)\n",
+            "  Downloading ruff-0.4.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (8.7 MB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m8.7/8.7 MB\u001b[0m \u001b[31m54.8 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hCollecting semantic-version~=2.0 (from gradio)\n",
+            "  Downloading semantic_version-2.10.0-py2.py3-none-any.whl (15 kB)\n",
+            "Collecting tomlkit==0.12.0 (from gradio)\n",
+            "  Downloading tomlkit-0.12.0-py3-none-any.whl (37 kB)\n",
+            "Collecting typer<1.0,>=0.12 (from gradio)\n",
+            "  Downloading typer-0.12.3-py3-none-any.whl (47 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m47.2/47.2 kB\u001b[0m \u001b[31m5.4 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: typing-extensions~=4.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (4.11.0)\n",
+            "Requirement already satisfied: urllib3~=2.0 in /usr/local/lib/python3.10/dist-packages (from gradio) (2.0.7)\n",
+            "Collecting uvicorn>=0.14.0 (from gradio)\n",
+            "  Downloading uvicorn-0.29.0-py3-none-any.whl (60 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m60.8/60.8 kB\u001b[0m \u001b[31m5.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: fsspec in /usr/local/lib/python3.10/dist-packages (from gradio-client==0.15.1->gradio) (2023.6.0)\n",
+            "Collecting websockets<12.0,>=10.0 (from gradio-client==0.15.1->gradio)\n",
+            "  Downloading websockets-11.0.3-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (129 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m129.9/129.9 kB\u001b[0m \u001b[31m7.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: entrypoints in /usr/local/lib/python3.10/dist-packages (from altair<6.0,>=4.2.0->gradio) (0.4)\n",
+            "Requirement already satisfied: jsonschema>=3.0 in /usr/local/lib/python3.10/dist-packages (from altair<6.0,>=4.2.0->gradio) (4.19.2)\n",
+            "Requirement already satisfied: toolz in /usr/local/lib/python3.10/dist-packages (from altair<6.0,>=4.2.0->gradio) (0.12.1)\n",
+            "Requirement already satisfied: anyio in /usr/local/lib/python3.10/dist-packages (from httpx>=0.24.1->gradio) (3.7.1)\n",
+            "Requirement already satisfied: certifi in /usr/local/lib/python3.10/dist-packages (from httpx>=0.24.1->gradio) (2024.2.2)\n",
+            "Collecting httpcore==1.* (from httpx>=0.24.1->gradio)\n",
+            "  Downloading httpcore-1.0.5-py3-none-any.whl (77 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m77.9/77.9 kB\u001b[0m \u001b[31m4.4 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: idna in /usr/local/lib/python3.10/dist-packages (from httpx>=0.24.1->gradio) (3.7)\n",
+            "Requirement already satisfied: sniffio in /usr/local/lib/python3.10/dist-packages (from httpx>=0.24.1->gradio) (1.3.1)\n",
+            "Collecting h11<0.15,>=0.13 (from httpcore==1.*->httpx>=0.24.1->gradio)\n",
+            "  Downloading h11-0.14.0-py3-none-any.whl (58 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m58.3/58.3 kB\u001b[0m \u001b[31m6.6 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: filelock in /usr/local/lib/python3.10/dist-packages (from huggingface-hub>=0.19.3->gradio) (3.13.4)\n",
+            "Requirement already satisfied: requests in /usr/local/lib/python3.10/dist-packages (from huggingface-hub>=0.19.3->gradio) (2.31.0)\n",
+            "Requirement already satisfied: tqdm>=4.42.1 in /usr/local/lib/python3.10/dist-packages (from huggingface-hub>=0.19.3->gradio) (4.66.2)\n",
+            "Requirement already satisfied: contourpy>=1.0.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (1.2.1)\n",
+            "Requirement already satisfied: cycler>=0.10 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (0.12.1)\n",
+            "Requirement already satisfied: fonttools>=4.22.0 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (4.51.0)\n",
+            "Requirement already satisfied: kiwisolver>=1.0.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (1.4.5)\n",
+            "Requirement already satisfied: pyparsing>=2.3.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (3.1.2)\n",
+            "Requirement already satisfied: python-dateutil>=2.7 in /usr/local/lib/python3.10/dist-packages (from matplotlib~=3.0->gradio) (2.8.2)\n",
+            "Requirement already satisfied: pytz>=2020.1 in /usr/local/lib/python3.10/dist-packages (from pandas<3.0,>=1.0->gradio) (2023.4)\n",
+            "Requirement already satisfied: tzdata>=2022.1 in /usr/local/lib/python3.10/dist-packages (from pandas<3.0,>=1.0->gradio) (2024.1)\n",
+            "Requirement already satisfied: annotated-types>=0.4.0 in /usr/local/lib/python3.10/dist-packages (from pydantic>=2.0->gradio) (0.6.0)\n",
+            "Requirement already satisfied: pydantic-core==2.18.1 in /usr/local/lib/python3.10/dist-packages (from pydantic>=2.0->gradio) (2.18.1)\n",
+            "Requirement already satisfied: click>=8.0.0 in /usr/local/lib/python3.10/dist-packages (from typer<1.0,>=0.12->gradio) (8.1.7)\n",
+            "Collecting shellingham>=1.3.0 (from typer<1.0,>=0.12->gradio)\n",
+            "  Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)\n",
+            "Requirement already satisfied: rich>=10.11.0 in /usr/local/lib/python3.10/dist-packages (from typer<1.0,>=0.12->gradio) (13.7.1)\n",
+            "Collecting starlette<0.38.0,>=0.37.2 (from fastapi->gradio)\n",
+            "  Downloading starlette-0.37.2-py3-none-any.whl (71 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m71.9/71.9 kB\u001b[0m \u001b[31m6.0 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: attrs>=22.2.0 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio) (23.2.0)\n",
+            "Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio) (2023.12.1)\n",
+            "Requirement already satisfied: referencing>=0.28.4 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio) (0.34.0)\n",
+            "Requirement already satisfied: rpds-py>=0.7.1 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=3.0->altair<6.0,>=4.2.0->gradio) (0.18.0)\n",
+            "Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.10/dist-packages (from python-dateutil>=2.7->matplotlib~=3.0->gradio) (1.16.0)\n",
+            "Requirement already satisfied: markdown-it-py>=2.2.0 in /usr/local/lib/python3.10/dist-packages (from rich>=10.11.0->typer<1.0,>=0.12->gradio) (3.0.0)\n",
+            "Requirement already satisfied: pygments<3.0.0,>=2.13.0 in /usr/local/lib/python3.10/dist-packages (from rich>=10.11.0->typer<1.0,>=0.12->gradio) (2.16.1)\n",
+            "Requirement already satisfied: exceptiongroup in /usr/local/lib/python3.10/dist-packages (from anyio->httpx>=0.24.1->gradio) (1.2.1)\n",
+            "Requirement already satisfied: charset-normalizer<4,>=2 in /usr/local/lib/python3.10/dist-packages (from requests->huggingface-hub>=0.19.3->gradio) (3.3.2)\n",
+            "Requirement already satisfied: mdurl~=0.1 in /usr/local/lib/python3.10/dist-packages (from markdown-it-py>=2.2.0->rich>=10.11.0->typer<1.0,>=0.12->gradio) (0.1.2)\n",
+            "Building wheels for collected packages: ffmpy\n",
+            "  Building wheel for ffmpy (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "  Created wheel for ffmpy: filename=ffmpy-0.3.2-py3-none-any.whl size=5584 sha256=91f3a7daa8934ed838180608044f3e37edf2dc5da10184b89970372ba9897e16\n",
+            "  Stored in directory: /root/.cache/pip/wheels/bd/65/9a/671fc6dcde07d4418df0c592f8df512b26d7a0029c2a23dd81\n",
+            "Successfully built ffmpy\n",
+            "Installing collected packages: pydub, ffmpy, websockets, tomlkit, shellingham, semantic-version, ruff, python-multipart, orjson, h11, aiofiles, uvicorn, starlette, httpcore, typer, httpx, fastapi, gradio-client, gradio\n",
+            "  Attempting uninstall: typer\n",
+            "    Found existing installation: typer 0.9.4\n",
+            "    Uninstalling typer-0.9.4:\n",
+            "      Successfully uninstalled typer-0.9.4\n",
+            "\u001b[31mERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n",
+            "spacy 3.7.4 requires typer<0.10.0,>=0.3.0, but you have typer 0.12.3 which is incompatible.\n",
+            "weasel 0.3.4 requires typer<0.10.0,>=0.3.0, but you have typer 0.12.3 which is incompatible.\u001b[0m\u001b[31m\n",
+            "\u001b[0mSuccessfully installed aiofiles-23.2.1 fastapi-0.110.2 ffmpy-0.3.2 gradio-4.27.0 gradio-client-0.15.1 h11-0.14.0 httpcore-1.0.5 httpx-0.27.0 orjson-3.10.1 pydub-0.25.1 python-multipart-0.0.9 ruff-0.4.1 semantic-version-2.10.0 shellingham-1.5.4 starlette-0.37.2 tomlkit-0.12.0 typer-0.12.3 uvicorn-0.29.0 websockets-11.0.3\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import gradio as gr\n",
+        "from PIL import Image\n",
+        "from keras.preprocessing.image import array_to_img"
+      ],
+      "metadata": {
+        "id": "1dZqSa-EdpHD"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "OPoATWOXBqE_"
+      },
+      "outputs": [],
+      "source": [
+        "import numpy as np\n",
+        "import os\n",
+        "import pandas as pd\n",
+        "import tensorflow as tf\n",
+        "from tensorflow import keras\n",
+        "from keras.models import Model\n",
+        "from keras.layers import Input, Dense, Flatten, Dropout\n",
+        "from keras.optimizers import Adam\n",
+        "from keras.applications import MobileNetV3Large\n",
+        "from keras.preprocessing.image import img_to_array, load_img\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from keras.callbacks import ModelCheckpoint\n",
+        "from sklearn.preprocessing import LabelEncoder\n",
+        "from keras.models import load_model"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from google.colab import drive\n",
+        "\n",
+        "# Mount Google Drive\n",
+        "drive.mount('/content/drive')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dajESiikTTPX",
+        "outputId": "65f6adc8-6985-4436-f27c-78c6b87fb77e"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Mounted at /content/drive\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "data = pd.read_csv(\"/content/drive/MyDrive/Autism_CSV_Files/Integrated_Dataset_Processed_Training_Final.csv\")"
+      ],
+      "metadata": {
+        "id": "ldtqZ3XoEWDr"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "data.head()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 206
+        },
+        "id": "s_ZtX9TRILz2",
+        "outputId": "907633e0-77a2-4927-daa9-0797c2167222"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "                                          image_path  A1_Score  A2_Score  \\\n",
+              "0  /content/drive/MyDrive/consolidated/autistic/0...         0         0   \n",
+              "1  /content/drive/MyDrive/consolidated/autistic/0...         0         0   \n",
+              "2  /content/drive/MyDrive/consolidated/autistic/0...         0         1   \n",
+              "3  /content/drive/MyDrive/consolidated/autistic/0...         1         0   \n",
+              "4  /content/drive/MyDrive/consolidated/autistic/0...         0         0   \n",
+              "\n",
+              "   A3_Score  A4_Score  A5_Score  A6_Score  A7_Score  A8_Score  A9_Score  \\\n",
+              "0         1         1         1         1         0         1         1   \n",
+              "1         1         0         1         1         1         1         1   \n",
+              "2         0         1         1         1         1         1         1   \n",
+              "3         0         1         1         1         1         0         1   \n",
+              "4         1         1         1         1         0         1         1   \n",
+              "\n",
+              "   A10_Score  ASD  \n",
+              "0          1  YES  \n",
+              "1          1  YES  \n",
+              "2          1  YES  \n",
+              "3          1  YES  \n",
+              "4          1  YES  "
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-60989c42-c098-4a48-a6be-5eb7dc7e64e2\" class=\"colab-df-container\">\n",
+              "    <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>image_path</th>\n",
+              "      <th>A1_Score</th>\n",
+              "      <th>A2_Score</th>\n",
+              "      <th>A3_Score</th>\n",
+              "      <th>A4_Score</th>\n",
+              "      <th>A5_Score</th>\n",
+              "      <th>A6_Score</th>\n",
+              "      <th>A7_Score</th>\n",
+              "      <th>A8_Score</th>\n",
+              "      <th>A9_Score</th>\n",
+              "      <th>A10_Score</th>\n",
+              "      <th>ASD</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>/content/drive/MyDrive/consolidated/autistic/0...</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>YES</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>/content/drive/MyDrive/consolidated/autistic/0...</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>YES</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>/content/drive/MyDrive/consolidated/autistic/0...</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>YES</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>/content/drive/MyDrive/consolidated/autistic/0...</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>YES</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>/content/drive/MyDrive/consolidated/autistic/0...</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>YES</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "    <div class=\"colab-df-buttons\">\n",
+              "\n",
+              "  <div class=\"colab-df-container\">\n",
+              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-60989c42-c098-4a48-a6be-5eb7dc7e64e2')\"\n",
+              "            title=\"Convert this dataframe to an interactive table.\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
+              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
+              "  </svg>\n",
+              "    </button>\n",
+              "\n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-buttons div {\n",
+              "      margin-bottom: 4px;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "    <script>\n",
+              "      const buttonEl =\n",
+              "        document.querySelector('#df-60989c42-c098-4a48-a6be-5eb7dc7e64e2 button.colab-df-convert');\n",
+              "      buttonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "      async function convertToInteractive(key) {\n",
+              "        const element = document.querySelector('#df-60989c42-c098-4a48-a6be-5eb7dc7e64e2');\n",
+              "        const dataTable =\n",
+              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                    [key], {});\n",
+              "        if (!dataTable) return;\n",
+              "\n",
+              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "          + ' to learn more about interactive tables.';\n",
+              "        element.innerHTML = '';\n",
+              "        dataTable['output_type'] = 'display_data';\n",
+              "        await google.colab.output.renderOutput(dataTable, element);\n",
+              "        const docLink = document.createElement('div');\n",
+              "        docLink.innerHTML = docLinkHtml;\n",
+              "        element.appendChild(docLink);\n",
+              "      }\n",
+              "    </script>\n",
+              "  </div>\n",
+              "\n",
+              "\n",
+              "<div id=\"df-1cb0f38d-7c96-44ef-a20a-0b3efdf740c6\">\n",
+              "  <button class=\"colab-df-quickchart\" onclick=\"quickchart('df-1cb0f38d-7c96-44ef-a20a-0b3efdf740c6')\"\n",
+              "            title=\"Suggest charts\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "     width=\"24px\">\n",
+              "    <g>\n",
+              "        <path d=\"M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z\"/>\n",
+              "    </g>\n",
+              "</svg>\n",
+              "  </button>\n",
+              "\n",
+              "<style>\n",
+              "  .colab-df-quickchart {\n",
+              "      --bg-color: #E8F0FE;\n",
+              "      --fill-color: #1967D2;\n",
+              "      --hover-bg-color: #E2EBFA;\n",
+              "      --hover-fill-color: #174EA6;\n",
+              "      --disabled-fill-color: #AAA;\n",
+              "      --disabled-bg-color: #DDD;\n",
+              "  }\n",
+              "\n",
+              "  [theme=dark] .colab-df-quickchart {\n",
+              "      --bg-color: #3B4455;\n",
+              "      --fill-color: #D2E3FC;\n",
+              "      --hover-bg-color: #434B5C;\n",
+              "      --hover-fill-color: #FFFFFF;\n",
+              "      --disabled-bg-color: #3B4455;\n",
+              "      --disabled-fill-color: #666;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart {\n",
+              "    background-color: var(--bg-color);\n",
+              "    border: none;\n",
+              "    border-radius: 50%;\n",
+              "    cursor: pointer;\n",
+              "    display: none;\n",
+              "    fill: var(--fill-color);\n",
+              "    height: 32px;\n",
+              "    padding: 0;\n",
+              "    width: 32px;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart:hover {\n",
+              "    background-color: var(--hover-bg-color);\n",
+              "    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "    fill: var(--button-hover-fill-color);\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart-complete:disabled,\n",
+              "  .colab-df-quickchart-complete:disabled:hover {\n",
+              "    background-color: var(--disabled-bg-color);\n",
+              "    fill: var(--disabled-fill-color);\n",
+              "    box-shadow: none;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-spinner {\n",
+              "    border: 2px solid var(--fill-color);\n",
+              "    border-color: transparent;\n",
+              "    border-bottom-color: var(--fill-color);\n",
+              "    animation:\n",
+              "      spin 1s steps(1) infinite;\n",
+              "  }\n",
+              "\n",
+              "  @keyframes spin {\n",
+              "    0% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "      border-left-color: var(--fill-color);\n",
+              "    }\n",
+              "    20% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    30% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    40% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    60% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    80% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "    90% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "  }\n",
+              "</style>\n",
+              "\n",
+              "  <script>\n",
+              "    async function quickchart(key) {\n",
+              "      const quickchartButtonEl =\n",
+              "        document.querySelector('#' + key + ' button');\n",
+              "      quickchartButtonEl.disabled = true;  // To prevent multiple clicks.\n",
+              "      quickchartButtonEl.classList.add('colab-df-spinner');\n",
+              "      try {\n",
+              "        const charts = await google.colab.kernel.invokeFunction(\n",
+              "            'suggestCharts', [key], {});\n",
+              "      } catch (error) {\n",
+              "        console.error('Error during call to suggestCharts:', error);\n",
+              "      }\n",
+              "      quickchartButtonEl.classList.remove('colab-df-spinner');\n",
+              "      quickchartButtonEl.classList.add('colab-df-quickchart-complete');\n",
+              "    }\n",
+              "    (() => {\n",
+              "      let quickchartButtonEl =\n",
+              "        document.querySelector('#df-1cb0f38d-7c96-44ef-a20a-0b3efdf740c6 button');\n",
+              "      quickchartButtonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "    })();\n",
+              "  </script>\n",
+              "</div>\n",
+              "\n",
+              "    </div>\n",
+              "  </div>\n"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "dataframe",
+              "variable_name": "data",
+              "summary": "{\n  \"name\": \"data\",\n  \"rows\": 2844,\n  \"fields\": [\n    {\n      \"column\": \"image_path\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 2844,\n        \"samples\": [\n          \"/content/drive/MyDrive/consolidated/autistic/0846.jpg\",\n          \"/content/drive/MyDrive/consolidated/non_autistic/1318.jpg\",\n          \"/content/drive/MyDrive/consolidated/autistic/0161.jpg\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A1_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          1,\n          0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A2_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          1,\n          0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A3_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          0,\n          1\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A4_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          0,\n          1\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A5_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          0,\n          1\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A6_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          0,\n          1\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A7_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          1,\n          0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A8_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          0,\n          1\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A9_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          0,\n          1\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A10_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          0,\n          1\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"ASD\",\n      \"properties\": {\n        \"dtype\": \"category\",\n        \"num_unique_values\": 2,\n        \"samples\": [\n          \"NO\",\n          \"YES\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
+            }
+          },
+          "metadata": {},
+          "execution_count": 6
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def preprocess_image(image_path):\n",
+        "    # Load the image from the drive link\n",
+        "    img = load_img(image_path, target_size=(224, 224))\n",
+        "    img_array = img_to_array(img)\n",
+        "    img_array = img_array / 255.0  # Normalize pixel values to [0, 1]\n",
+        "    return img_array"
+      ],
+      "metadata": {
+        "id": "yPJuNojPIN51"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "label_encoder = LabelEncoder()\n",
+        "data['ASD'] = label_encoder.fit_transform(data['ASD'])"
+      ],
+      "metadata": {
+        "id": "PY0xNWzILUk2"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "data.tail()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 206
+        },
+        "id": "KBaSytMw_7Ek",
+        "outputId": "cd4b64b7-20d0-47d9-9a1a-abcafcc210e0"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "                                             image_path  A1_Score  A2_Score  \\\n",
+              "2839  /content/drive/MyDrive/consolidated/non_autist...         0         0   \n",
+              "2840  /content/drive/MyDrive/consolidated/non_autist...         0         0   \n",
+              "2841  /content/drive/MyDrive/consolidated/non_autist...         0         0   \n",
+              "2842  /content/drive/MyDrive/consolidated/non_autist...         0         0   \n",
+              "2843  /content/drive/MyDrive/consolidated/non_autist...         0         0   \n",
+              "\n",
+              "      A3_Score  A4_Score  A5_Score  A6_Score  A7_Score  A8_Score  A9_Score  \\\n",
+              "2839         0         1         1         1         1         1         1   \n",
+              "2840         0         1         1         1         1         1         1   \n",
+              "2841         0         1         1         1         1         1         1   \n",
+              "2842         0         0         1         1         0         1         0   \n",
+              "2843         0         1         1         1         1         1         1   \n",
+              "\n",
+              "      A10_Score  ASD  \n",
+              "2839          0    0  \n",
+              "2840          0    0  \n",
+              "2841          0    0  \n",
+              "2842          1    0  \n",
+              "2843          0    0  "
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-628985e8-0fb7-4c4d-a47b-2a60c61d30f8\" class=\"colab-df-container\">\n",
+              "    <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>image_path</th>\n",
+              "      <th>A1_Score</th>\n",
+              "      <th>A2_Score</th>\n",
+              "      <th>A3_Score</th>\n",
+              "      <th>A4_Score</th>\n",
+              "      <th>A5_Score</th>\n",
+              "      <th>A6_Score</th>\n",
+              "      <th>A7_Score</th>\n",
+              "      <th>A8_Score</th>\n",
+              "      <th>A9_Score</th>\n",
+              "      <th>A10_Score</th>\n",
+              "      <th>ASD</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>2839</th>\n",
+              "      <td>/content/drive/MyDrive/consolidated/non_autist...</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2840</th>\n",
+              "      <td>/content/drive/MyDrive/consolidated/non_autist...</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2841</th>\n",
+              "      <td>/content/drive/MyDrive/consolidated/non_autist...</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2842</th>\n",
+              "      <td>/content/drive/MyDrive/consolidated/non_autist...</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2843</th>\n",
+              "      <td>/content/drive/MyDrive/consolidated/non_autist...</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>1</td>\n",
+              "      <td>0</td>\n",
+              "      <td>0</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "    <div class=\"colab-df-buttons\">\n",
+              "\n",
+              "  <div class=\"colab-df-container\">\n",
+              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-628985e8-0fb7-4c4d-a47b-2a60c61d30f8')\"\n",
+              "            title=\"Convert this dataframe to an interactive table.\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
+              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
+              "  </svg>\n",
+              "    </button>\n",
+              "\n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-buttons div {\n",
+              "      margin-bottom: 4px;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "    <script>\n",
+              "      const buttonEl =\n",
+              "        document.querySelector('#df-628985e8-0fb7-4c4d-a47b-2a60c61d30f8 button.colab-df-convert');\n",
+              "      buttonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "      async function convertToInteractive(key) {\n",
+              "        const element = document.querySelector('#df-628985e8-0fb7-4c4d-a47b-2a60c61d30f8');\n",
+              "        const dataTable =\n",
+              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                    [key], {});\n",
+              "        if (!dataTable) return;\n",
+              "\n",
+              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "          + ' to learn more about interactive tables.';\n",
+              "        element.innerHTML = '';\n",
+              "        dataTable['output_type'] = 'display_data';\n",
+              "        await google.colab.output.renderOutput(dataTable, element);\n",
+              "        const docLink = document.createElement('div');\n",
+              "        docLink.innerHTML = docLinkHtml;\n",
+              "        element.appendChild(docLink);\n",
+              "      }\n",
+              "    </script>\n",
+              "  </div>\n",
+              "\n",
+              "\n",
+              "<div id=\"df-686c31c2-ad51-4d82-86d7-5f377ad43bfc\">\n",
+              "  <button class=\"colab-df-quickchart\" onclick=\"quickchart('df-686c31c2-ad51-4d82-86d7-5f377ad43bfc')\"\n",
+              "            title=\"Suggest charts\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "     width=\"24px\">\n",
+              "    <g>\n",
+              "        <path d=\"M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z\"/>\n",
+              "    </g>\n",
+              "</svg>\n",
+              "  </button>\n",
+              "\n",
+              "<style>\n",
+              "  .colab-df-quickchart {\n",
+              "      --bg-color: #E8F0FE;\n",
+              "      --fill-color: #1967D2;\n",
+              "      --hover-bg-color: #E2EBFA;\n",
+              "      --hover-fill-color: #174EA6;\n",
+              "      --disabled-fill-color: #AAA;\n",
+              "      --disabled-bg-color: #DDD;\n",
+              "  }\n",
+              "\n",
+              "  [theme=dark] .colab-df-quickchart {\n",
+              "      --bg-color: #3B4455;\n",
+              "      --fill-color: #D2E3FC;\n",
+              "      --hover-bg-color: #434B5C;\n",
+              "      --hover-fill-color: #FFFFFF;\n",
+              "      --disabled-bg-color: #3B4455;\n",
+              "      --disabled-fill-color: #666;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart {\n",
+              "    background-color: var(--bg-color);\n",
+              "    border: none;\n",
+              "    border-radius: 50%;\n",
+              "    cursor: pointer;\n",
+              "    display: none;\n",
+              "    fill: var(--fill-color);\n",
+              "    height: 32px;\n",
+              "    padding: 0;\n",
+              "    width: 32px;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart:hover {\n",
+              "    background-color: var(--hover-bg-color);\n",
+              "    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "    fill: var(--button-hover-fill-color);\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart-complete:disabled,\n",
+              "  .colab-df-quickchart-complete:disabled:hover {\n",
+              "    background-color: var(--disabled-bg-color);\n",
+              "    fill: var(--disabled-fill-color);\n",
+              "    box-shadow: none;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-spinner {\n",
+              "    border: 2px solid var(--fill-color);\n",
+              "    border-color: transparent;\n",
+              "    border-bottom-color: var(--fill-color);\n",
+              "    animation:\n",
+              "      spin 1s steps(1) infinite;\n",
+              "  }\n",
+              "\n",
+              "  @keyframes spin {\n",
+              "    0% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "      border-left-color: var(--fill-color);\n",
+              "    }\n",
+              "    20% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    30% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    40% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    60% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    80% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "    90% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "  }\n",
+              "</style>\n",
+              "\n",
+              "  <script>\n",
+              "    async function quickchart(key) {\n",
+              "      const quickchartButtonEl =\n",
+              "        document.querySelector('#' + key + ' button');\n",
+              "      quickchartButtonEl.disabled = true;  // To prevent multiple clicks.\n",
+              "      quickchartButtonEl.classList.add('colab-df-spinner');\n",
+              "      try {\n",
+              "        const charts = await google.colab.kernel.invokeFunction(\n",
+              "            'suggestCharts', [key], {});\n",
+              "      } catch (error) {\n",
+              "        console.error('Error during call to suggestCharts:', error);\n",
+              "      }\n",
+              "      quickchartButtonEl.classList.remove('colab-df-spinner');\n",
+              "      quickchartButtonEl.classList.add('colab-df-quickchart-complete');\n",
+              "    }\n",
+              "    (() => {\n",
+              "      let quickchartButtonEl =\n",
+              "        document.querySelector('#df-686c31c2-ad51-4d82-86d7-5f377ad43bfc button');\n",
+              "      quickchartButtonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "    })();\n",
+              "  </script>\n",
+              "</div>\n",
+              "\n",
+              "    </div>\n",
+              "  </div>\n"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "dataframe",
+              "summary": "{\n  \"name\": \"data\",\n  \"rows\": 5,\n  \"fields\": [\n    {\n      \"column\": \"image_path\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 5,\n        \"samples\": [\n          \"/content/drive/MyDrive/consolidated/non_autistic/0450.jpg\",\n          \"/content/drive/MyDrive/consolidated/non_autistic/0457.jpg\",\n          \"/content/drive/MyDrive/consolidated/non_autistic/0455.jpg\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A1_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 0,\n        \"num_unique_values\": 1,\n        \"samples\": [\n          0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A2_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 0,\n        \"num_unique_values\": 1,\n        \"samples\": [\n          0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A3_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 0,\n        \"num_unique_values\": 1,\n        \"samples\": [\n          0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A4_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A5_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 1,\n        \"max\": 1,\n        \"num_unique_values\": 1,\n        \"samples\": [\n          1\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A6_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 1,\n        \"max\": 1,\n        \"num_unique_values\": 1,\n        \"samples\": [\n          1\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A7_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A8_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 1,\n        \"max\": 1,\n        \"num_unique_values\": 1,\n        \"samples\": [\n          1\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A9_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"A10_Score\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 1,\n        \"num_unique_values\": 2,\n        \"samples\": [\n          1\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"ASD\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 0,\n        \"min\": 0,\n        \"max\": 0,\n        \"num_unique_values\": 1,\n        \"samples\": [\n          0\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
+            }
+          },
+          "metadata": {},
+          "execution_count": 9
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Preprocess images and save preprocessed data\n",
+        "preprocessed_image_path = '/content/drive/MyDrive/Training_Autism_Model.npy'\n",
+        "if os.path.exists(preprocessed_image_path):\n",
+        "    image_data = np.load(preprocessed_image_path)\n",
+        "else:\n",
+        "    image_data = np.array([preprocess_image(image_path) for image_path in data['image_path']])\n",
+        "    np.save(preprocessed_image_path, image_data)"
+      ],
+      "metadata": {
+        "id": "0Uh4L9nMLYaz"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Extract numerical features\n",
+        "numerical_features = data[['A1_Score', 'A2_Score', 'A3_Score', 'A4_Score', 'A5_Score', 'A6_Score', 'A7_Score', 'A8_Score', 'A9_Score', 'A10_Score']].values"
+      ],
+      "metadata": {
+        "id": "2a55SpU-V27r"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Split the data into train and test sets\n",
+        "X_img_train, X_img_test, X_num_train, X_num_test, y_train, y_test = train_test_split(image_data, numerical_features, data['ASD'], test_size=0.2, random_state=42)"
+      ],
+      "metadata": {
+        "id": "T21gMD2aLdNj"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [],
+      "metadata": {
+        "id": "1zYQlcZoUHp7"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# Define base model\n",
+        "base_model = MobileNetV3Large(weights='imagenet', include_top=False, input_shape=(224, 224, 3))\n",
+        "\n",
+        "# Freeze the base model\n",
+        "base_model.trainable = False"
+      ],
+      "metadata": {
+        "id": "eznauMQGO7mj",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "2f327d4b-7e85-4452-cf6e-7c9da74122f0"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Downloading data from https://storage.googleapis.com/tensorflow/keras-applications/mobilenet_v3/weights_mobilenet_v3_large_224_1.0_float_no_top_v2.h5\n",
+            "12683000/12683000 [==============================] - 0s 0us/step\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# Functional API for model building\n",
+        "input_img = Input(shape=(224, 224, 3), name='image_input')\n",
+        "x = base_model(input_img, training=False)\n",
+        "x = Flatten()(x)\n",
+        "input_num = Input(shape=(10,), name='numerical_input')\n",
+        "concatenated = tf.keras.layers.concatenate([x, input_num])\n",
+        "x = Dense(128, activation='relu')(concatenated)\n",
+        "x = Dropout(0.5)(x)\n",
+        "output = Dense(1, activation='sigmoid', name='output')(x)"
+      ],
+      "metadata": {
+        "id": "M3ryX_F5PBIP"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Define the model\n",
+        "model = Model(inputs=[input_img, input_num], outputs=output)"
+      ],
+      "metadata": {
+        "id": "tYAVM18oPPLZ"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "model.compile(optimizer=Adam(learning_rate=1e-4), loss='binary_crossentropy', metrics=['accuracy'])"
+      ],
+      "metadata": {
+        "id": "FWGm6PF4PSQf"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "checkpoint = ModelCheckpoint('/content/drive/MyDrive/Training_Autism_Model/MobileNetV3Large.h5', monitor='val_accuracy', mode='max', save_best_only=True, verbose=1)"
+      ],
+      "metadata": {
+        "id": "dibPHv9wPVQ4"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "history = model.fit([X_img_train, X_num_train], y_train, batch_size=32, epochs=10, validation_split=0.2, callbacks=[checkpoint])"
+      ],
+      "metadata": {
+        "id": "8BngAsYzP48n"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "# Load the model\n",
+        "model = load_model('/content/drive/MyDrive/Training_Autism_Model/MobileNetV3Large.h5')\n",
+        "\n",
+        "# Now you can use loaded_model for predictions or further training"
+      ],
+      "metadata": {
+        "id": "1YfinxCvLv84"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "history = model.fit([X_img_train, X_num_train], y_train,\n",
+        "                    batch_size=32, epochs=100,\n",
+        "                    initial_epoch=10,\n",
+        "                    validation_split=0.2,  # 20% of training data will be used for validation\n",
+        "                    callbacks=[checkpoint])\n"
+      ],
+      "metadata": {
+        "id": "jBaLDPuvIL02"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "history = model.fit([X_img_train, X_num_train], y_train,\n",
+        "                    batch_size=32, epochs=130,\n",
+        "                    initial_epoch=100,\n",
+        "                    validation_split=0.2,  # 20% of training data will be used for validation\n",
+        "                    callbacks=[checkpoint])\n"
+      ],
+      "metadata": {
+        "id": "GGcDHWn_JgK1"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "history = model.fit([X_img_train, X_num_train], y_train,\n",
+        "                    batch_size=32, epochs=150,\n",
+        "                    initial_epoch=130,\n",
+        "                    validation_split=0.2,  # 20% of training data will be used for validation\n",
+        "                    callbacks=[checkpoint])"
+      ],
+      "metadata": {
+        "id": "3gishwVqKDLK"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "history = model.fit([X_img_train, X_num_train], y_train,\n",
+        "                    batch_size=32, epochs=200,\n",
+        "                    initial_epoch=150,\n",
+        "                    validation_split=0.2,  # 20% of training data will be used for validation\n",
+        "                    callbacks=[checkpoint])"
+      ],
+      "metadata": {
+        "id": "m9Cy82F9KoPT"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Evaluate the model\n",
+        "loss, accuracy = model.evaluate([X_img_test, X_num_test], y_test)\n",
+        "print(f'Test Loss: {loss}, Test Accuracy: {accuracy}')"
+      ],
+      "metadata": {
+        "id": "IWUE08SpQNSo",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "e88edbc5-f30d-412b-a011-a9365d241935"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "18/18 [==============================] - 18s 909ms/step - loss: 0.0716 - accuracy: 0.9736\n",
+            "Test Loss: 0.07160123437643051, Test Accuracy: 0.9736379384994507\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.metrics import precision_score, recall_score, f1_score,accuracy_score\n",
+        "\n",
+        "\n",
+        "# Get the predicted labels for the test data\n",
+        "y_pred = model.predict([X_img_test, X_num_test])\n",
+        "\n",
+        "# Convert the predicted probabilities to binary labels (0 or 1)\n",
+        "y_pred_binary = (y_pred > 0.5).astype(int)\n",
+        "\n",
+        "# Compute precision, recall, and F1-score\n",
+        "precision = precision_score(y_test, y_pred_binary)\n",
+        "recall = recall_score(y_test, y_pred_binary)\n",
+        "f1 = f1_score(y_test, y_pred_binary)\n",
+        "\n",
+        "\n",
+        "# Compute accuracy\n",
+        "accuracy = accuracy_score(y_test, y_pred_binary)\n",
+        "\n",
+        "# Print the results\n",
+        "print(\"Accuracy:\", accuracy)\n",
+        "# Print the results\n",
+        "print(\"Precision:\", precision)\n",
+        "print(\"Recall:\", recall)\n",
+        "print(\"F1-score:\", f1)\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dfCYkyltOXBA",
+        "outputId": "ca8ef922-de8b-45bc-d929-950033165762"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "18/18 [==============================] - 2s 43ms/step\n",
+            "Accuracy: 0.9736379613356766\n",
+            "Precision: 0.9889705882352942\n",
+            "Recall: 0.9572953736654805\n",
+            "F1-score: 0.972875226039783\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from sklearn.metrics import confusion_matrix\n",
+        "import seaborn as sns\n",
+        "import matplotlib.pyplot as plt\n",
+        "\n",
+        "# Compute the confusion matrix\n",
+        "conf_matrix = confusion_matrix(y_test, y_pred_binary)\n",
+        "\n",
+        "# Plot the confusion matrix\n",
+        "plt.figure(figsize=(8, 6))\n",
+        "sns.heatmap(conf_matrix, annot=True, cmap='Blues', fmt='g')\n",
+        "plt.xlabel('Predicted labels')\n",
+        "plt.ylabel('True labels')\n",
+        "plt.title('Confusion Matrix')\n",
+        "plt.show()\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 564
+        },
+        "id": "ofKhMz3CPu9d",
+        "outputId": "1439492a-9d61-4f3c-f2ee-c0cb4d227ab4"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<Figure size 800x600 with 2 Axes>"
+            ],
+            "image/png": "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4CqaRKCACgoKkiT99ddfeRq/b98++fj4qEqVKk7HIyIiFBISon379jkdL1++vHGNkiVL6s8//7zCik333nuvmjZtqn79+ik8PFw9evTQhx9+eMmG8Vyd1atXN87VrFlTx44dU0ZGhtPx879LyZIlJcml79KxY0cFBgZqwYIFmjdvnho3bmz8lufk5uZq2rRpqlq1qux2u0qXLq0yZcpo69atOnnyZJ7vecMNN7j0kMqUKVMUGhqqzZs3a/r06QoLC8vzZwHAVTSJQAEVFBSkqKgo/fzzzy597vwHRy7G19f3gscty7rie5xbL3dOQECAVq9erW+++UYPPPCAtm7dqnvvvVe33367MfZqXM13Ocdut6tr166aM2eOFi5ceNEUUZKee+45xcfHq0WLFnrvvff01VdfadmyZbrxxhvznJhKf/8+rti0aZOOHDkiSdq2bZtLnwUAV9EkAgXYHXfcoeTkZCUmJl52bHR0tHJzc7Vr1y6n44cPH1ZqaqrjSeX8ULJkSacngc85P62UJB8fH7Vp00ZTp07VL7/8omeffVYrVqzQt99+e8Frn6tz586dxrlff/1VpUuXVvHixa/uC1xEz549tWnTJv31118XfNjnnP/9739q3bq13n77bfXo0UOxsbFq27at8ZvktWHPi4yMDPXp00e1atXSgAEDNHnyZK1bty7frg8A56NJBAqwESNGqHjx4urXr58OHz5snE9OTtZLL70k6e/pUknGE8hTp06VJHXq1Cnf6qpcubJOnjyprVu3Oo4dOnRICxcudBp34sQJ47PnNpU+f1uecyIjI1W/fn3NmTPHqen6+eef9fXXXzu+pzu0bt1aEydO1CuvvKKIiIiLjvP19TVSyo8++kh//PGH07FzzeyFGmpXjRw5Uvv379ecOXM0depUVahQQXFxcRf9HQHgarGZNlCAVa5cWfPnz9e9996rmjVrOv3FlTVr1uijjz5S7969JUn16tVTXFyc3njjDaWmpqply5b66aefNGfOHHXp0uWi26tciR49emjkyJG6++679fjjj+vUqVOaMWOGqlWr5vTgxoQJE7R69Wp16tRJ0dHROnLkiF577TWVLVtWzZo1u+j1n3/+eXXo0EExMTHq27evTp8+rZdfflnBwcEaN25cvn2P8/n4+OiZZ5657Lg77rhDEyZMUJ8+fXTrrbdq27Ztmjdv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oPj4eI0dO1YbN25UvXr11K5dOx05csTTpQG4ChkZGapXr55effVVT5cCeDW2wEGh1aRJEzVu3FivvPKKJCk3N1flypXTY489pieffNLD1QHIDzabTQsXLlSXLl08XQrgdUgSUSidOXNGGzZsUNu2bR3HfHx81LZtWyUmJnqwMgAArg80iSiUjh07ppycHIWHhzsdDw8PV0pKioeqAgDg+kGTCAAAAANNIgql0qVLy9fXV4cPH3Y6fvjwYUVERHioKgAArh80iSiU/Pz81LBhQy1fvtxxLDc3V8uXL1dMTIwHKwMA4PpQxNMFAFcqPj5ecXFxatSokW6++Wa9+OKLysjIUJ8+fTxdGoCrkJ6erqSkJMf7PXv2aPPmzQoNDVX58uU9WBngXdgCB4XaK6+8oueff14pKSmqX7++pk+friZNmni6LABXYeXKlWrdurVxPC4uTrNnz772BQFeiiYRAAAABtYkAgAAwECTCAAAAANNIgAAAAw0iQAAADDQJAIAAMBAkwgAAAADTSIAAAAMNIkAAAAw0CQCuGq9e/dWly5dHO9btWqlJ5544prXsXLlStlsNqWmpl50jM1m06JFi/J8zXHjxql+/fpXVdfevXtls9m0efPmq7oOAFxLNInAdap3796y2Wyy2Wzy8/NTlSpVNGHCBJ09e9bt9/7kk080ceLEPI3NS2MHALj2ini6AADu0759e82aNUtZWVlaunSpBg4cqKJFi2rUqFHG2DNnzsjPzy9f7hsaGpov1wEAeA5JInAds9vtioiIUHR0tB555BG1bdtWn332maT/myJ+9tlnFRUVperVq0uSDhw4oO7duyskJEShoaHq3Lmz9u7d67hmTk6O4uPjFRISolKlSmnEiBE6/0/Anz/dnJWVpZEjR6pcuXKy2+2qUqWK3n77be3du1etW7eWJJUsWVI2m029e/eWJOXm5iohIUEVK1ZUQECA6tWrp//9739O91m6dKmqVaumgIAAtW7d2qnOvBo5cqSqVaumYsWKqVKlSho9erSys7ONca+//rrKlSunYsWKqXv37jp58qTT+bfeeks1a9aUv7+/atSooddee+2i9/zzzz/Vq1cvlSlTRgEBAapatapmzZrlcu0A4E4kiYAXCQgI0PHjxx3vly9frqCgIC1btkySlJ2drXbt2ikmJkbfffedihQpokmTJql9+/baunWr/Pz89MILL2j27Nl65513VLNmTb3wwgtauHChbrvttove98EHH1RiYqKmT5+uevXqac+ePTp27JjKlSunjz/+WN26ddPOnTsVFBSkgIAASVJCQoLee+89zZw5U1WrVtXq1at1//33q0yZMmrZsqUOHDigrl27auDAgRowYIDWr1+voUOHuvybBAYGavbs2YqKitK2bdvUv39/BQYGasSIEY4xSUlJ+vDDD7V48WKlpaWpb9++evTRRzVv3jxJ0rx58zRmzBi98soratCggTZt2qT+/furePHiiouLM+45evRo/fLLL/riiy9UunRpJSUl6fTp0y7XDgBuZQG4LsXFxVmdO3e2LMuycnNzrWXLlll2u90aNmyY43x4eLiVlZXl+MzcuXOt6tWrW7m5uY5jWVlZVkBAgPXVV19ZlmVZkZGR1uTJkx3ns7OzrbJlyzruZVmW1bJlS2vw4MGWZVnWzp07LUnWsmXLLljnt99+a0my/vzzT8exzMxMq1ixYtaaNWucxvbt29e67777LMuyrFGjRlm1atVyOj9y5EjjWueTZC1cuPCi559//nmrYcOGjvdjx461fH19rd9//91x7IsvvrB8fHysQ4cOWZZlWZUrV7bmz5/vdJ2JEydaMTExlmVZ1p49eyxJ1qZNmyzLsqw777zT6tOnz0VrAICCgCQRuI4tWbJEJUqUUHZ2tnJzc9WzZ0+NGzfOcb5OnTpO6xC3bNmipKQkBQYGOl0nMzNTycnJOnnypA4dOqQmTZo4zhUpUkSNGjUyppzP2bx5s3x9fdWyZcs8152UlKRTp07p9ttvdzp+5swZNWjQQJK0Y8cOpzokKSYmJs/3OGfBggWaPn26kpOTlZ6errNnzyooKMhpTPny5XXDDTc43Sc3N1c7d+5UYGCgkpOT1bdvX/Xv398x5uzZswoODr7gPR955BF169ZNGzduVGxsrLp06aJbb73V5doBwJ1oEoHrWOvWrTVjxgz5+fkpKipKRYo4/ytfvHhxp/fp6elq2LChYxr1n8qUKXNFNZybPnZFenq6JOnzzz93as6kv9dZ5pfExET16tVL48ePV7t27RQcHKwPPvhAL7zwgsu1vvnmm0bT6uvre8HPdOjQQfv27dPSpUu1bNkytWnTRgMHDtSUKVOu/MsAQD6jSQSuY8WLF1eVKlXyPP6mm27SggULFBYWZqRp50RGRmrt2rVq0aKFpL8Tsw0bNuimm2664Pg6deooNzdXq1atUtu2bY3z55LMnJwcx7FatWrJbrdr//79F00ga9as6XgI55wff/zx8l/yH9asWaPo6Gg9/fTTjmP79u0zxu3fv18HDx5UVFSU4z4+Pj6qXr26wsPDFRUVpd27d6tXr155vneZMmUUFxenuLg4NW/eXMOHD6dJBFCg8HQzAIdevXqpdOnS6ty5s7777jvt2bNHK1eu1OOPP67ff/9dkjR48GD95z//0aJFi/Trr7/q0UcfveQehxUqVFBcXJweeughLVq0yHHNDz/8UJIUHR0tm82mJUuW6OjRo0pPT1dgYKCGDRumIUOGaM6cOUpOTtbGjRv18ssva86cOZKkhx9+WLt27dLw4cO1c+dOzZ8/X7Nnz3bp+1atWlX79+/XBx98oOTkZE2fPl0LFy40xvn7+ysuLk5btmzRd999p8cff1zdu3dXRESEJGn8+PFKSEjQ9OnT9dtvv2nbtm2aNWuWpk6desH7jhkzRp9++qmSkpK0fft2LVmyRDVr1nSpdgBwN5pEAA7FihXT6tWrVb58eXXt2lU1a9ZU3759lZmZ6UgWhw4dqgceeEBxcXGKiYlRYGCg7r777kted8aMGbrnnnv06KOPqkaNGurfv78yMjIkSTfccIPGjx+vJ598UuHh4Ro0aJAkaeLEiRo9erQSEhJUs2ZNtW/fXp9//rkqVqwo6e91gh9//LEWLVqkevXqaebMmXruuedc+r533XWXhgwZokGDBql+/fpas2aNRo8ebYyrUqWKunbtqo4dOyo2NlZ169Z12uKmX79+euuttzRr1izVqVNHLVu21OzZsx21ns/Pz0+jRo1S3bp11aJFC/n6+uqDDz5wqXYAcDebdbHV5gAAAPBaJIkAAAAw0CQCAADAQJMIAAAAA00iAAAADDSJAAAAMNAkAgAAwECTCAAAAANNIgAAAAw0iQAAADDQJAIAAMBAkwgAAADD/wODoi8lpkAozQAAAABJRU5ErkJggg==\n"
+          },
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "plt.savefig('confusion_matrix.png')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 34
+        },
+        "id": "BVdjo5nFQMt7",
+        "outputId": "95d443ad-d53a-4249-86c7-ccdd32664855"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<Figure size 640x480 with 0 Axes>"
+            ]
+          },
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import matplotlib.pyplot as plt\n",
+        "\n",
+        "\n",
+        "\n",
+        "# Plot train vs test accuracy\n",
+        "plt.plot(history.history['accuracy'], label='Train Accuracy')\n",
+        "plt.plot(history.history['val_accuracy'], label='Test Accuracy')\n",
+        "plt.xlabel('Epoch')\n",
+        "plt.ylabel('Accuracy')\n",
+        "plt.title('Train vs Test Accuracy')\n",
+        "plt.legend()\n",
+        "plt.savefig('train_test_accuracy.png')\n",
+        "plt.show()\n",
+        "\n",
+        "# Plot train vs test AUC\n",
+        "plt.plot(history.history['auc'], label='Train AUC')\n",
+        "plt.plot(history.history['val_auc'], label='Test AUC')\n",
+        "plt.xlabel('Epoch')\n",
+        "plt.ylabel('AUC')\n",
+        "plt.title('Train vs Test AUC')\n",
+        "plt.legend()\n",
+        "plt.savefig('train_test_auc.png')\n",
+        "plt.show()\n",
+        "\n",
+        "# Similarly, plot and save other metrics like precision, recall, etc.\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "wSoQ_z59Q-zF",
+        "outputId": "a6c2a36d-8b28-47de-a79f-883175148f85",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 211
+        }
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "NameError",
+          "evalue": "name 'history' is not defined",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+            "\u001b[0;32m<ipython-input-25-0bae30a8c967>\u001b[0m in \u001b[0;36m<cell line: 6>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      4\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      5\u001b[0m \u001b[0;31m# Plot train vs test accuracy\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 6\u001b[0;31m \u001b[0mplt\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mplot\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mhistory\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mhistory\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m'accuracy'\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mlabel\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m'Train Accuracy'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      7\u001b[0m \u001b[0mplt\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mplot\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mhistory\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mhistory\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m'val_accuracy'\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mlabel\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m'Test Accuracy'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      8\u001b[0m \u001b[0mplt\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mxlabel\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m'Epoch'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mNameError\u001b[0m: name 'history' is not defined"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Define the question prompts\n",
+        "questions = [\n",
+        "    \"S/he often notices small sounds when others do not\",\n",
+        "    \"S/he usually concentrates more on the whole picture, rather than the small details\",\n",
+        "    \"In a social group, s/he can easily keep track of several different people’s conversations\",\n",
+        "    \"S/he finds it easy to go back and forth between different activities\",\n",
+        "    \"S/he doesn’t know how to keep a conversation going with his/her peers\",\n",
+        "    \"S/he is good at social chit-chat\",\n",
+        "    \"When s/he is read a story, s/he finds it difficult to work out the character’s intentions or feelings\",\n",
+        "    \"When s/he was in preschool, s/he used to enjoy playing games involving pretending with other children\",\n",
+        "    \"S/he finds it easy to work out what someone is thinking or feeling just by looking at their face\",\n",
+        "    \"S/he finds it hard to make new friends\"\n",
+        "]"
+      ],
+      "metadata": {
+        "id": "C1U15xIdMH3a"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def predict_autism(image_path, A1_Score, A2_Score, A3_Score, A4_Score, A5_Score, A6_Score, A7_Score, A8_Score, A9_Score, A10_Score):\n",
+        "    # Preprocess the image\n",
+        "    img = load_img(image_path, target_size=(224, 224))\n",
+        "    img_array = img_to_array(img)\n",
+        "    img_array = img_array / 255.0  # Normalize pixel values to [0, 1]\n",
+        "\n",
+        "    # Convert the numerical features to a numpy array\n",
+        "    x = np.array([A1_Score, A2_Score, A3_Score, A4_Score, A5_Score, A6_Score, A7_Score, A8_Score, A9_Score, A10_Score])\n",
+        "\n",
+        "    # Predict using the model\n",
+        "    prediction = model.predict([img_array.reshape(1, 224, 224, 3), x.reshape(1, -1)])\n",
+        "    return prediction\n"
+      ],
+      "metadata": {
+        "id": "-kzLAk6Fd-uN"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import random\n",
+        "\n",
+        "# Define the image path\n",
+        "image_path = \"/content/drive/MyDrive/consolidated/autistic/0002.jpg\"\n",
+        "\n",
+        "# Define the scores randomly\n",
+        "A1_Score = 0\n",
+        "A2_Score = 0\n",
+        "A3_Score = 0\n",
+        "A4_Score = 1\n",
+        "A5_Score = 0\n",
+        "A6_Score = 1\n",
+        "A7_Score = 1\n",
+        "A8_Score = 0\n",
+        "A9_Score = 1\n",
+        "A10_Score = 0\n",
+        "prediction = predict_autism(image_path, A1_Score, A2_Score, A3_Score, A4_Score, A5_Score, A6_Score, A7_Score, A8_Score, A9_Score, A10_Score)\n",
+        "# Convert the predicted probability to a binary prediction\n",
+        "if prediction >= 0.5:\n",
+        "    binary_prediction = 1\n",
+        "    prediction_text = \"Probable ASD Patient\"\n",
+        "else:\n",
+        "    binary_prediction = 0\n",
+        "    prediction_text = \"Not Probable ASD Patient\"\n",
+        "\n",
+        "print(binary_prediction)\n",
+        "print(prediction_text)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dTgq-8AG_GXN",
+        "outputId": "9d821a67-b081-45b6-b11e-69706adde96a"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "1/1 [==============================] - 0s 24ms/step\n",
+            "0\n",
+            "Not Probable ASD Patient\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def predict_autism_gradio(img_numpy_array, A1_Score, A2_Score, A3_Score, A4_Score, A5_Score, A6_Score, A7_Score, A8_Score, A9_Score, A10_Score):\n",
+        "    # Preprocess the image\n",
+        "    img = array_to_img(img_numpy_array)\n",
+        "    img = img.resize((224,224))\n",
+        "    img_array = img_to_array(img)\n",
+        "\n",
+        "\n",
+        "    if not isinstance(img_numpy_array, np.ndarray):\n",
+        "        raise TypeError(\"img_numpy_array must  be a numpy array\")\n",
+        "\n",
+        "    img_array = img_array / 255.0  # Normalize pixel values to [0, 1]\n",
+        "\n",
+        "    # Convert the numerical features to a numpy array\n",
+        "    x = np.array([A1_Score, A2_Score, A3_Score, A4_Score, A5_Score, A6_Score, A7_Score, A8_Score, A9_Score, A10_Score])\n",
+        "\n",
+        "    # Predict using the model\n",
+        "    prediction = model.predict([img_array.reshape(1, 224, 224, 3), x.reshape(1, -1)])\n",
+        "    if prediction >= 0.5:\n",
+        "      binary_prediction = 1\n",
+        "      prediction_text = \"ASD: Positive\"\n",
+        "    else:\n",
+        "      binary_prediction = 0\n",
+        "      prediction_text = \"ASD: Negative\"\n",
+        "\n",
+        "    return prediction_text"
+      ],
+      "metadata": {
+        "id": "GjEzXs69Vs3T"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "outputs = gr.components.Textbox()"
+      ],
+      "metadata": {
+        "id": "h7mFs5-2_mJ_"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "app = gr.Interface(fn=predict_autism_gradio,\n",
+        "                   inputs=[\"image\",\n",
+        "                           \"number\", \"number\", \"number\", \"number\", \"number\",\n",
+        "                           \"number\", \"number\", \"number\", \"number\", \"number\"],\n",
+        "                   outputs=outputs,\n",
+        "                   description=\"Predict if autism is present based on image and AQ-10 scores\")"
+      ],
+      "metadata": {
+        "id": "0wetpCPXBVc_"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "app.launch(share=True)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 591
+        },
+        "id": "FsKhTeM2B4HK",
+        "outputId": "651a43fb-d44a-4641-cfda-77d062f9b180"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Colab notebook detected. To show errors in colab notebook, set debug=True in launch()\n",
+            "Running on public URL: https://5216c3e4ff9b38a517.gradio.live\n",
+            "\n",
+            "This share link expires in 72 hours. For free permanent hosting and GPU upgrades, run `gradio deploy` from Terminal to deploy to Spaces (https://huggingface.co/spaces)\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.HTML object>"
+            ],
+            "text/html": [
+              "<div><iframe src=\"https://5216c3e4ff9b38a517.gradio.live\" width=\"100%\" height=\"500\" allow=\"autoplay; camera; microphone; clipboard-read; clipboard-write;\" frameborder=\"0\" allowfullscreen></iframe></div>"
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": []
+          },
+          "metadata": {},
+          "execution_count": 61
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import gradio as gr\n",
+        "\n",
+        "# Define the question prompts\n",
+        "questions = [\n",
+        "    \"1. S/he often notices small sounds when others do not. (Enter 1 if you Definitely/Slightly Agree with the statement and Enter 0 if you Definitely/Slightly Disagree with the statement.)\",\n",
+        "    \"2. S/he usually concentrates more on the whole picture, rather than the small details (Enter 0 if you Definitely/Slightly Agree with the statement and Enter 1 if you Definitely/Slightly Disagree with the statement.)\",\n",
+        "    \"3. In a social group, s/he can easily keep track of several different people’s conversations (Enter 0 if you Definitely/Slightly Agree with the statement and Enter 1 if you Definitely/Slightly Disagree with the statement.)\",\n",
+        "    \"4. S/he finds it easy to go back and forth between different activities (Enter 0 if you Definitely/Slightly Agree with the statement and Enter 1 if you Definitely/Slightly Disagree with the statement.)\",\n",
+        "    \"5. S/he doesn’t know how to keep a conversation going with his/her peers (Enter 1 if you Definitely/Slightly Agree with the statement and Enter 0 if you Definitely/Slightly Disagree with the statement.)\",\n",
+        "    \"6. S/he is good at social chit-chat (Enter 0 if you Definitely/Slightly Agree with the statement and Enter 1 if you Definitely/Slightly Disagree with the statement.)\",\n",
+        "    \"7. When s/he is read a story, s/he finds it difficult to work out the character’s intentions or feelings (Enter 1 if you Definitely/Slightly Agree with the statement and Enter 0 if you Definitely/Slightly Disagree with the statement.)\",\n",
+        "    \"8. When s/he was in preschool, s/he used to enjoy playing games involving pretending with other children (Enter 0 if you Definitely/Slightly Agree with the statement and Enter 1 if you Definitely/Slightly Disagree with the statement.)\",\n",
+        "    \"9. S/he finds it easy to work out what someone is thinking or feeling just by looking at their face (Enter 0 if you Definitely/Slightly Agree with the statement and Enter 1 if you Definitely/Slightly Disagree with the statement.)\",\n",
+        "    \"10. S/he finds it hard to make new friends (Enter 1 if you Definitely/Slightly Agree with the statement and Enter 0 if you Definitely/Slightly Disagree with the statement.)\"\n",
+        "]\n",
+        "\n",
+        "\n",
+        "# Define the input components\n",
+        "inputs = [gr.components.Image(label=\"Image\")]  # Assuming you have an image input\n",
+        "for i, question in enumerate(questions):\n",
+        "    inputs.append(gr.components.Number(label=question, minimum=0, maximum=10))\n",
+        "\n",
+        "# Define the output components\n",
+        "outputs = gr.components.Label(label=\"Prediction\")\n",
+        "\n",
+        "# Define the Gradio interface\n",
+        "demo = gr.Interface(fn=predict_autism_gradio,\n",
+        "                   inputs=inputs,\n",
+        "                   outputs=outputs,\n",
+        "                   description=\"Predict if autism is present based on image and AQ-10 scores\")\n",
+        "\n",
+        "# Run the Gradio interface\n",
+        "demo.launch()\n"
+      ],
+      "metadata": {
+        "id": "ivSpmAZWCDb4",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 626
+        },
+        "outputId": "2d4a4391-0aaa-4c4f-a810-6135a43ed5eb"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Setting queue=True in a Colab notebook requires sharing enabled. Setting `share=True` (you can turn this off by setting `share=False` in `launch()` explicitly).\n",
+            "\n",
+            "Colab notebook detected. To show errors in colab notebook, set debug=True in launch()\n",
+            "Running on public URL: https://9658f489947b38c50b.gradio.live\n",
+            "\n",
+            "This share link expires in 72 hours. For free permanent hosting and GPU upgrades, run `gradio deploy` from Terminal to deploy to Spaces (https://huggingface.co/spaces)\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "<IPython.core.display.HTML object>"
+            ],
+            "text/html": [
+              "<div><iframe src=\"https://9658f489947b38c50b.gradio.live\" width=\"100%\" height=\"500\" allow=\"autoplay; camera; microphone; clipboard-read; clipboard-write;\" frameborder=\"0\" allowfullscreen></iframe></div>"
+            ]
+          },
+          "metadata": {}
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": []
+          },
+          "metadata": {},
+          "execution_count": 62
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "O79w1r9V8Tv2"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
